@@ -42,23 +42,23 @@ flowchart LR
     end
 
     subgraph Agent[Agent Router]
-        ROUTER[LLM Router<br/>(_route_with_llm)<br/>and Fallback Heuristic]
+        ROUTER[LLM Router (_route_with_llm) + Fallback]
         EXEC[_execute_plan]
     end
 
     subgraph Tools[Tools]
-        GEN[general_conversation<br/>(no DB, empty metadata)]
-        TXT[text_product_search<br/>(CatalogStore.search)]
-        IMG[image_product_search<br/>(prompt for text then TXT)]
+        GEN[general_conversation (no DB)]
+        TXT[text_product_search (CatalogStore.search)]
+        IMG[image_product_search (prompt -> TXT)]
     end
 
     subgraph VectorDB[Vector DB]
-        CHROMA[ChromaDB Collection<br/>commerce_products]
+        CHROMA[ChromaDB: commerce_products]
     end
 
     subgraph Models[Models]
-        EMB[Embeddings<br/>BAAI/bge-base-en]
-        LLM[Chat LLM<br/>(configurable)]
+        EMB[Embeddings: BAAI/bge-base-en]
+        LLM[Chat LLM (configurable)]
     end
 
     UI -->|JSON request| ASK
