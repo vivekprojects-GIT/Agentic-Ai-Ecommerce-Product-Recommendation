@@ -350,6 +350,63 @@ lsof -ti:8080 | xargs -r kill -9
 
 ---
 
+### Quick commands (copy/paste)
+
+- Env + install (fresh)
+```
+python -m venv .venv && source .venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
+```
+
+- Minimal env (adjust your key)
+```
+export GOOGLE_API_KEY="<your_key>"; export LLM_MODEL=gemini-2.5-flash; export LLM_API_VERSION=v1
+```
+
+- Run API on 8080 (reload)
+```
+source .venv/bin/activate 2>/dev/null || true; uvicorn api:app --host 0.0.0.0 --port 8080 --reload | tee -a api.log
+```
+
+- Kill port 8080 if busy
+```
+lsof -ti:8080 | xargs -r kill -9
+```
+
+- Health check
+```
+curl -s http://localhost:8080/health | jq .
+```
+
+- Ask (text)
+```
+curl -s -X POST http://localhost:8080/api/v1/simple-rag/ask \
+  -H "Content-Type: application/json" \
+  -d '{"text_input":"red t shirt"}' | jq
+```
+
+- Ask (image)
+```
+IMG64=$(base64 -i ./sample.png 2>/dev/null || cat ./sample.base64)
+curl -s -X POST http://localhost:8080/api/v1/simple-rag/ask \
+  -H "Content-Type: application/json" \
+  -d "{\"text_input\":null,\"image_base64\":\"${IMG64}\"}" | jq
+```
+
+- Reload config at runtime
+```
+curl -s -X POST http://localhost:8080/admin/reload | jq .
+```
+
+- Tail API logs
+```
+tail -f api.log
+```
+
+- Push current branch to GitHub
+```
+git add -A && git commit -m "chore: update docs and code" && git push -u origin $(git rev-parse --abbrev-ref HEAD)
+```
+
 ### License
 
 MIT
