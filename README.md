@@ -4,6 +4,45 @@ PalonaAI is a multimodal, LLM-routed commerce assistant. It retrieves products f
 
 ---
 
+### Quick Start (5 steps)
+
+1) Create env and install deps
+```
+python -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+2) Configure your keys
+```
+cp env_template.txt .env
+echo 'GOOGLE_API_KEY=YOUR_KEY' >> .env
+echo 'LLM_MODEL=gemini-2.5-flash' >> .env
+echo 'LLM_API_VERSION=v1' >> .env
+```
+
+3) Start the API (port 8080)
+```
+uvicorn api:app --host 0.0.0.0 --port 8080 --reload | tee -a api.log
+```
+
+4) Verify health
+```
+curl -s http://localhost:8080/health | jq .
+```
+
+5) Ask a question
+```
+curl -s -X POST http://localhost:8080/api/v1/simple-rag/ask \
+  -H "Content-Type: application/json" \
+  -d '{"text_input":"red t shirt"}' | jq
+```
+
+Tip: For image queries, send base64 in `image_base64`. See Quick commands.
+
+---
+
 ### Architecture and Design Decisions
 
 - Agent-as-Router (src/agent.py)
@@ -26,6 +65,24 @@ PalonaAI is a multimodal, LLM-routed commerce assistant. It retrieves products f
   - All key behavior is controlled via environment variables; no code changes for typical tuning.
 
 ---
+
+### Simple Architecture
+
+```mermaid
+flowchart TD
+  User[User (Text/Image)] --> UI[Web UI]
+  UI --> API[FastAPI /ask]
+  API --> Agent[Router]
+  Agent -->|general_chat| Gen[General Conversation]
+  Agent -->|product_search| Txt[Text Search]
+  Agent -->|image_search| Img[Image → LLM → Text]
+  Txt --> DB[(ChromaDB)]
+  Img --> Txt
+  Gen --> API
+  Txt --> API
+  Img --> API
+  API --> UI
+```
 
 ### Architecture Diagram
 
