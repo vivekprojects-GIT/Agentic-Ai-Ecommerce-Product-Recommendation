@@ -249,6 +249,26 @@ curl -X POST http://localhost:8080/api/v1/simple-rag/ask \
   -d '{"text_input": "running shoes"}'
 ```
 
+### Run the UI (Gradio)
+
+UI expects the API to be running on `http://<api_host>:8080`.
+
+1) Start/ensure API is running
+```
+uvicorn api:app --host 0.0.0.0 --port 8080 --reload | tee -a api.log
+```
+
+2) Launch the UI (port 7860)
+```
+python ui.py
+# UI → http://0.0.0.0:7860
+```
+
+3) Use the chat
+- Type a product request (e.g., "red t shirt").
+- Optionally upload an image; the UI will convert it to base64 and send it to the API.
+- The agent will route to text or image search and return top-3 products with links.
+
 Deployment tips:
 - Use a reverse proxy (nginx) and TLS.
 - Persist `chroma_db/` to durable storage.
