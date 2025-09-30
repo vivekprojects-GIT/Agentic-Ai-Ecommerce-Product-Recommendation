@@ -69,19 +69,19 @@ Tip: For image queries, send base64 in `image_base64`. See Quick commands.
 ### Simple Architecture
 
 ```mermaid
-flowchart TD;
-  User[User (Text\/Image)] --> UI[Web UI]
-  UI --> API[FastAPI /ask]
-  API --> Agent[Router]
-  Agent -->|general_chat| Gen[General Conversation]
-  Agent -->|product_search| Txt[Text Search]
-  Agent -->|image_search| Img[Image -> LLM -> Text]
-  Txt --> DB[(ChromaDB)]
-  Img --> Txt
-  Gen --> API
-  Txt --> API
-  Img --> API
-  API --> UI
+flowchart TD
+  A[User (Text or Image)] --> B[Web UI]
+  B --> C[FastAPI /ask]
+  C --> D[Router]
+  D -->|general_chat| E[General Conversation]
+  D -->|product_search| F[Text Search]
+  D -->|image_search| G[Image -> LLM -> Text]
+  F --> H[(ChromaDB)]
+  G --> F
+  E --> C
+  F --> C
+  G --> C
+  C --> B
 ```
 
 ### Architecture Diagram
