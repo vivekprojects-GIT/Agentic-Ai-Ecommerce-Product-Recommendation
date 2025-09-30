@@ -146,13 +146,15 @@ class UnifiedCommerceUI:
             brand = product.get('attributes', {}).get('brand', 'Unknown Brand')
             color = product.get('attributes', {}).get('color_family', 'Unknown Color')
             description = product.get('description', '')
+            url = product.get('url', '')
             
             # Truncate description if too long
             if len(description) > 100:
                 description = description[:100] + '...'
             
+            display_name = f"[{name}]({url})" if url else name
             product_card = f"""
-**{i}. {name}** - ${price:.2f}
+**{i}. {display_name}** - ${price:.2f}
 - **Brand:** {brand}
 - **Color:** {color}
 - **Description:** {description}

@@ -85,11 +85,13 @@ class TextProductSearchTool:
             name = product.get('name', 'Unknown Product')
             price = product.get('price', 0)
             description = product.get('description', '')
+            url = product.get('url', '')
             
             # Get one key relevant feature from description
             key_feature = description[:50] + "..." if len(description) > 50 else description
             
-            response += f"{i}. **{name}** - ${price:.2f}\n"
+            display_name = f"[{name}]({url})" if url else name
+            response += f"{i}. **{display_name}** - ${price:.2f}\n"
             response += f"   {key_feature}\n\n"
         
         return response

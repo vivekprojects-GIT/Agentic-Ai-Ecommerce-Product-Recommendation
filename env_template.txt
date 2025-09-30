@@ -18,6 +18,7 @@ LLM_MAX_TOKENS=2048
 CHROMA_PERSIST_DIR=./chroma_db
 CHROMA_FORCE_RELOAD=0
 CHROMA_COLLECTION_NAME=commerce_products
+PRODUCT_BASE_URL=https://example.com/products/
 
 # Search Configuration
 SEARCH_TOP_K=3

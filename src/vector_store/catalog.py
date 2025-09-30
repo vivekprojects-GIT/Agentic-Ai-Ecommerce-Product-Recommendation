@@ -100,8 +100,15 @@ class CatalogStore:
             raise e
     
     def _create_metadata(self, product: Dict[str, Any]) -> Dict[str, Any]:
-        """Create metadata dictionary for ChromaDB."""
+        """Create metadata dictionary for ChromaDB.
+        Adds stable fields including a product URL. If no URL provided in the
+        source JSON, constructs one from PRODUCT_BASE_URL and product id.
+        """
+        base_url = os.getenv("PRODUCT_BASE_URL", "https://example.com/products/")
+        product_url = product.get("url") or f"{base_url}{product['id']}"
+
         metadata = {
+            'id': product['id'],
             'name': product['name'],
             'description': product['description'],
             'price': product['price'],
@@ -110,7 +117,8 @@ class CatalogStore:
             'color_family': product['attributes'].get('color_family', ''),
             'material': product['attributes'].get('material', ''),
             'category': product['category'][0] if product['category'] else '',  # Use first category
-            'size': json.dumps(product['attributes'].get('size', []))  # Store as JSON string
+            'size': json.dumps(product['attributes'].get('size', [])),  # Store as JSON string
+            'url': product_url
         }
         return metadata
     
@@ -129,7 +137,8 @@ class CatalogStore:
                 'material': metadata.get('material', ''),
                 'size': json.loads(metadata.get('size', '[]'))
             },
-            'search_text': document
+            'search_text': document,
+            'url': metadata.get('url', '')
         }
         return product
     
