@@ -299,22 +299,24 @@ class UnifiedCommerceUI:
                         container=True
                     )
                     
-                    # Input area
+                    # Input area with inline image uploader
                     with gr.Row():
                         msg_input = gr.Textbox(
-                            placeholder="Ask me about products or upload an image...",
+                            placeholder="Ask me about products or upload an image below...",
                             show_label=False,
                             lines=1,
                             max_lines=3,
-                            scale=4
+                            scale=5
                         )
                         send_btn = gr.Button("Send", variant="primary", scale=1)
-                    
-                    # Image upload
+
+                    # Image upload (full-width, clearly visible)
                     image_input = gr.Image(
                         type="pil",
+                        sources=["upload", "clipboard", "webcam"],
                         label="Upload Image (Optional)",
-                        height=200
+                        height=240,
+                        interactive=True
                     )
                     
                     # Action buttons
@@ -335,24 +337,45 @@ class UnifiedCommerceUI:
                 return self.clear_chat()
             
             def show_memory_info():
-                memory_context = self.conversation_memory.get_context_for_api()
-                memory_text = f"""
-                ## 🧠 Conversation Memory Status
-                
-                **Current State**: {memory_context['current_state']}
-                **Total Interactions**: {memory_context['session_metadata']['total_interactions']}
-                **Session Start**: {memory_context['session_metadata']['start_time']}
-                **Recent History**: {len(memory_context['conversation_history'])} interactions
-                
-                **Recent Interactions:**
+                ctx = self.conversation_memory.get_context_for_api()
+                state = (ctx.get('current_state') or 'idle').lower()
+                meta = ctx.get('session_metadata', {})
+                history = ctx.get('conversation_history', [])
+
+                # Build compact state line with highlighted current state
+                state_order = ["idle", "searching", "analyzing", "chatting"]
+                def fmt(s):
+                    return f"<span style='padding:2px 8px;border-radius:10px;background:#2a3942;color:#e9edef'>{s}</span>" if s != state \
+                        else f"<span style='padding:2px 8px;border-radius:10px;background:#00a884;color:#111b21;font-weight:700'>{s}</span>"
+                state_graph = " → ".join(fmt(s) for s in state_order)
+
+                # Build recent interactions (most recent first, max 5)
+                lines = []
+                recent = history[-5:][::-1]
+                for it in recent:
+                    intent = it.get('intent', 'unknown')
+                    text = (it.get('user_input') or '').strip().replace('\n', ' ')
+                    if len(text) > 70:
+                        text = text[:70] + '…'
+                    badge = f"<span style='padding:2px 6px;border:1px solid #2a3942;border-radius:6px;color:#e9edef'>{intent}</span>"
+                    lines.append(f"<div style='margin:6px 0'><span style='opacity:.85'>{badge}</span> <span style='color:#cfd8dc'>{text}</span></div>")
+
+                recent_html = "".join(lines) if lines else "<div style='opacity:.7'>No prior interactions.</div>"
+
+                # Compose panel
+                html = f"""
+<div style='line-height:1.6'>
+  <div style='margin-bottom:8px;font-weight:700;font-size:16px'>Conversation Memory</div>
+  <div style='margin-bottom:6px'>State: {state_graph}</div>
+  <div style='margin-bottom:12px;color:#cfd8dc'>
+    <span style='margin-right:12px'>Checkpoints: <b>{meta.get('total_interactions',0)}</b></span>
+    <span>Started: {meta.get('start_time','')}</span>
+  </div>
+  <div style='margin:6px 0;font-weight:600'>Recent</div>
+  {recent_html}
+</div>
                 """
-                
-                for i, interaction in enumerate(memory_context['conversation_history'][-3:], 1):
-                    memory_text += f"""
-                {i}. **{interaction['intent']}** - {interaction['user_input'][:50]}...
-                """
-                
-                return memory_text
+                return html
             
             # Connect event handlers
             send_btn.click(

@@ -7,8 +7,15 @@ from typing import List, Dict, Any, Optional, Generator
 from datetime import datetime
 import json
 
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.prompts import ChatPromptTemplate
+# Optional LLM imports; fall back gracefully if unavailable
+try:
+    from langchain_google_genai import ChatGoogleGenerativeAI  # type: ignore
+    from langchain_core.prompts import ChatPromptTemplate  # type: ignore
+    _HAS_GOOGLE_GENAI = True
+except Exception:
+    ChatGoogleGenerativeAI = None  # type: ignore
+    ChatPromptTemplate = None  # type: ignore
+    _HAS_GOOGLE_GENAI = False
 
 from src.config import get_config, setup_logging
 # Removed duplicate imports - functionality is now integrated directly
@@ -47,9 +54,23 @@ class ModularAgenticAgent:
         if errors:
             raise ValueError(f"Configuration errors: {', '.join(errors)}")
         
-        # Initialize LLM with dynamic configuration
-        llm_config = self.config.get_llm_config()
-        self.llm = ChatGoogleGenerativeAI(**llm_config)
+        # Initialize LLM with dynamic configuration if available
+        self.llm = None
+        if _HAS_GOOGLE_GENAI:
+            try:
+                llm_config = self.config.get_llm_config()
+                # First try with provided api_version; if NotFound occurs, retry with v1beta once
+                try:
+                    self.llm = ChatGoogleGenerativeAI(**llm_config)  # type: ignore
+                except Exception as e:
+                    if "v1beta" not in (llm_config.get("api_version") or ""):
+                        llm_config_retry = {**llm_config, "api_version": "v1beta"}
+                        self.llm = ChatGoogleGenerativeAI(**llm_config_retry)  # type: ignore
+                        logger.info("LLM initialized with v1beta fallback")
+                    else:
+                        raise e
+            except Exception as e:
+                logger.warning(f"LLM unavailable; continuing with rule-based routing. Error: {e}")
         
         # Initialize tools with dynamic configuration
         self.catalog = CatalogStore(
@@ -68,10 +89,11 @@ class ModularAgenticAgent:
         self.max_retries = self.config.max_retries
         
         # Create tools for the agent (only if tool calling is enabled)
-        if self.config.tool_calling_enabled:
-            self.tools = ["general_conversation", "text_product_search", "image_product_search"]
-        else:
-            self.tools = []
+        # Tools are dynamically toggled via env flags (ENABLE_IMAGE_ANALYSIS, etc.)
+        tools: List[str] = ["general_conversation", "text_product_search"]
+        if getattr(self.config, 'enable_image_analysis', True):
+            tools.append("image_product_search")
+        self.tools = tools if self.config.tool_calling_enabled else []
         
         logger.info(f"Modular Agentic Commerce Agent initialized with config: {self.config.llm_model}, retries: {self.config.max_retries}")
     
@@ -92,6 +114,10 @@ class ModularAgenticAgent:
 
         Returns one of: "general_chat", "product_search", "image_search".
         """
+        if not self.llm or not ChatPromptTemplate:  # type: ignore
+            # Indicate to caller to use fallback
+            raise RuntimeError("LLM router not available")
+
         router_system = (
             "You are PalonaAI's routing controller. Decide which tool should handle the user's message. "
             "Available tools: general_conversation, text_product_search, image_product_search. "
@@ -200,18 +226,8 @@ class ModularAgenticAgent:
                 logger.warning("No products available for hybrid search")
                 return []
             
-            # Initialize hybrid search system
-            from src.tools.hybrid_search import HybridSearchSystem
-            hybrid_search = HybridSearchSystem(
-                api_key=self.config.google_api_key,
-                embedding_model=self.catalog.embedding_model
-            )
-            
-            # Load products into hybrid search
-            hybrid_search.load_products(all_products)
-            
-            # Perform hybrid search with optimal parameters
-            products = hybrid_search.hybrid_search(query, top_k=top_k)
+            # Hybrid search module not available; use catalog search directly
+            products = self.catalog.search(query, top_k=top_k)
             
             logger.info(f"Hybrid search found {len(products)} products for query: '{query}'")
             return products
@@ -294,7 +310,11 @@ class ModularAgenticAgent:
                     state["messages"].append({"role": "user", "content": message})
             
             # Classify intent
-            intent = self._classify_intent(message)
+            # If an image is provided, prioritize image_search routing
+            if image_base64:
+                intent = "image_search"
+            else:
+                intent = self._classify_intent(message)
             state["user_intent"] = intent
             
             # Create plan

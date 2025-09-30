@@ -1,6 +1,6 @@
 ### PalonaAI Commerce Agent – README
 
-PalonaAI is a production-ready, LLM-routed commerce assistant. It retrieves products from a vector database (ChromaDB) and generates concise recommendations. The system is LLM-driven for routing (with immediate fallback), uses a simplified RAG path (Text → Vector DB → Top K → LLM formatting/fallback), and avoids static rules and hardcoded metadata.
+PalonaAI is a multimodal, LLM-routed commerce assistant. It retrieves products from a vector database (ChromaDB) and generates concise recommendations. The system supports text and image queries, uses a simplified RAG path (Text/Image → Vector DB → Top K → formatting/fallback), and avoids static rules and hardcoded metadata. Recent updates add LLM-based image description, dynamic vocab extraction, and a keyword-match fallback for exact item names.
 
 ---
 
@@ -12,8 +12,8 @@ PalonaAI is a production-ready, LLM-routed commerce assistant. It retrieves prod
   - Clean separation of concerns: Router delegates to tools; tools each handle one responsibility.
 
 - Simplified RAG
-  - Text → semantic retrieval from ChromaDB → top-K (strict 3) → LLM/fallback formatting.
-  - No static filters; relevance is learned via embeddings and vector similarity.
+  - Text/Image → semantic retrieval from ChromaDB → top-K (strict 3) → LLM/fallback formatting.
+  - Dynamic vocab built from catalog at runtime; no static color/brand lists.
 
 - General Conversation Has No DB Access
   - General-chat responses do not query the DB and return empty metadata.
@@ -97,7 +97,7 @@ Base URL: `http://localhost:8080`
 - POST `/api/v1/simple-rag/ask`
   - Request JSON:
     - `text_input: string | null`
-    - `image_base64: string | null` (optional; currently prompts to use text description)
+    - `image_base64: string | null` (optional; when provided, the agent prioritizes image search)
     - `conversation_history: [{ user_input: string, agent_response: string }]` (optional)
     - `conversation_context: object` (optional)
   - Response JSON:
@@ -201,8 +201,8 @@ Deployment tips:
 
 ### LLM Routing and Fallbacks
 
-- Router prompt asks the LLM to select: `general_conversation`, `text_product_search`, or `image_product_search`.
-- On provider errors (429/timeouts), routing immediately falls back to a minimal heuristic without blocking.
+- Router selects `general_conversation`, `text_product_search`, or `image_product_search`. If an image is present, the agent routes to image search.
+- Provider errors (429/timeouts) fall back to a minimal heuristic without blocking.
 - Formatting can be done by LLM; a concise fallback formatter enforces the strict top-3 output.
 
 ---
@@ -212,6 +212,7 @@ Deployment tips:
 - `CatalogStore` (ChromaDB) stores product text and metadata embeddings.
 - `CatalogStore.search(query, top_k)` returns the most similar products.
 - Results are strictly limited to 3 for presentation.
+- If semantic retrieval returns none, a keyword-overlap fallback surfaces exact product names from `name`, `description`, and `search_text`.
 
 ---
 
@@ -221,11 +222,10 @@ Deployment tips:
   - Handles greetings and general Q&A (name/capabilities/help) with no DB access; returns empty metadata.
 
 - `text_product_search.py`
-  - `search_products(query: str, top_k?: int)`: semantic retrieval via `CatalogStore.search()`, formats top-3.
-  - Helpers: `get_product_categories()`, `get_brands()`, `search_by_category()`, `search_by_brand()`.
+  - `search_products(query: str, top_k?: int)`: semantic retrieval via `CatalogStore.search()` with dynamic vocab (colors/brands/categories) extracted at runtime from the catalog; strict top-3 output; keyword fallback for exact names.
 
 - `image_product_search.py`
-  - Prompts the user to describe the image in text; delegates to `text_product_search`.
+  - Sends the uploaded image to an LLM with a strict JSON prompt to extract: `item_type`, `category`, `color`, `material`, `pattern`, `style`, `keywords`. The parsed description drives text search. Graceful fallback if the LLM is unavailable.
 
 ---
 
@@ -257,6 +257,10 @@ lsof -ti:8080 | xargs -r kill -9
 ```
 - LLM quota exceeded
   - Router and formatter fall back instantly; consider switching providers or throttling.
+- Vision 404 / image not processed
+  - Ensure `GOOGLE_API_KEY` is set and `LLM_MODEL` supports image input (e.g., `gemini-2.5-flash`) and try `LLM_API_VERSION=v1beta`.
+- Links not clickable in UI
+  - The UI renders markdown links; ensure your browser is not blocking them.
 - No products found
   - Ensure Chroma has items; first-run logs show collection counts.
   - Verify `SEARCH_TOP_K`, embedding model, and `catalog.json` ingestion.

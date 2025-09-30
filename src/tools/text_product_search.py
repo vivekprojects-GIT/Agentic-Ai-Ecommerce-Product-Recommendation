@@ -7,6 +7,8 @@ import logging
 from typing import Dict, Any, List, Optional
 from src.vector_store.catalog import CatalogStore
 from src.config.dynamic_config import get_config
+import re
+import string
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +20,60 @@ class TextProductSearchTool:
         self.catalog = catalog
         self.config = get_config()
         self.hybrid_search = None  # Deprecated: hybrid search removed
+        self._vocab_cache: Dict[str, List[str]] = {}
+
+    def _build_dynamic_vocab(self) -> Dict[str, List[str]]:
+        """Build vocab (colors, brands, categories) from catalog at runtime.
+
+        This avoids relying on any static lists or config. Results are cached
+        for the lifetime of the tool instance.
+        """
+        if self._vocab_cache:
+            return self._vocab_cache
+
+        all_products = self.catalog.get_all_products()
+        colors, brands, categories = set(), set(), set()
+        for p in all_products:
+            attrs = p.get("attributes", {}) or {}
+            c = attrs.get("color_family")
+            if isinstance(c, str) and c:
+                colors.add(c.strip().lower())
+            b = attrs.get("brand")
+            if isinstance(b, str) and b:
+                brands.add(b.strip().lower())
+            cats = p.get("category") or []
+            for cat in cats if isinstance(cats, list) else [cats]:
+                if isinstance(cat, str) and cat:
+                    categories.add(cat.strip().lower())
+
+        self._vocab_cache = {
+            "colors": sorted(colors),
+            "brands": sorted(brands),
+            "categories": sorted(categories),
+        }
+        return self._vocab_cache
+
+    def _normalize(self, s: str) -> str:
+        table = str.maketrans('', '', string.punctuation)
+        return (s or "").lower().translate(table)
+
+    def _simple_keyword_match(self, query: str, limit: int) -> List[Dict[str, Any]]:
+        qn = self._normalize(query)
+        q_tokens = [t for t in qn.split() if t]
+        if not q_tokens:
+            return []
+        all_products = self.catalog.get_all_products()
+        scored: List[tuple[float, Dict[str, Any]]] = []
+        for p in all_products:
+            name = self._normalize(p.get("name", ""))
+            desc = self._normalize(p.get("description", ""))
+            text = f"{name} {desc} {self._normalize(p.get('search_text',''))}"
+            # simple token overlap score
+            hits = sum(1 for t in q_tokens if t in text)
+            if hits:
+                scored.append((hits / len(q_tokens), p))
+        scored.sort(key=lambda x: x[0], reverse=True)
+        return [p for _, p in scored[:limit]]
         
     def search_products(self, query: str, top_k: int = None) -> Dict[str, Any]:
         """Search for products based on text query."""
@@ -27,8 +83,48 @@ class TextProductSearchTool:
                 
             logger.info(f"Text product search for query: '{query}'")
             
-            # Direct catalog semantic search only (hybrid removed)
-            products = self.catalog.search(query, top_k=top_k)
+            # Parse lightweight structured constraints (price, color)
+            constraints: Dict[str, Any] = {}
+            q_lower = (query or "").lower()
+
+            # price: "under 10", "below $15", "<= 20"
+            m = re.search(r"(?:under|below|<=|less than)\s*\$?\s*(\d+)", q_lower)
+            if m:
+                try:
+                    constraints["price_max"] = float(m.group(1))
+                    constraints.setdefault("price_min", 0.0)
+                except Exception:
+                    pass
+
+            # color detection (dynamic from catalog metadata)
+            vocab = self._build_dynamic_vocab()
+            for c in vocab.get("colors", []):
+                if re.search(fr"\b{re.escape(c)}\b", q_lower):
+                    constraints["color_family"] = c.title()
+                    break
+
+            # Direct catalog semantic search with optional metadata filters
+            products = self.catalog.search(query, top_k=top_k * 2, filters=constraints if constraints else None)
+
+            # Additional post-filter to enforce price/color if present in free text but not metadata
+            def passes(p: Dict[str, Any]) -> bool:
+                if "price_max" in constraints and p.get("price", 0) > constraints["price_max"]:
+                    return False
+                if "color_family" in constraints:
+                    meta_color = p.get("attributes", {}).get("color_family", "")
+                    name_desc = (p.get("name","") + " " + p.get("description",""))
+                    if constraints["color_family"].lower() not in (meta_color or "").lower() \
+                       and constraints["color_family"].lower() not in name_desc.lower():
+                        return False
+                return True
+
+            products = [p for p in products if passes(p)][:top_k]
+
+            # Fallback: exact/substring keyword match if semantic returns none
+            if not products:
+                fallback = self._simple_keyword_match(query, top_k)
+                if fallback:
+                    products = fallback
             
             if not products:
                 return {

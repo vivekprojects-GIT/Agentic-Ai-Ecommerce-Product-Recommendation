@@ -18,8 +18,15 @@ class CatalogStore:
         persist_dir = os.getenv("CHROMA_PERSIST_DIR", persist_dir)
         embedding_model = embedding_model or os.getenv("EMBEDDING_MODEL", "BAAI/bge-base-en")
 
+        # Prefer CPU to reduce RAM/GPU pressure
+        os.environ.setdefault("CUDA_VISIBLE_DEVICES", "")
+        os.environ.setdefault("PYTORCH_MPS_HIGH_WATERMARK_RATIO", "0.0")
+        os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+        os.environ.setdefault("OMP_NUM_THREADS", "1")
+        os.environ.setdefault("MKL_NUM_THREADS", "1")
+
         # Initialize embedding model
-        self.embedding_model = SentenceTransformer(embedding_model)
+        self.embedding_model = SentenceTransformer(embedding_model, device="cpu")
         logger.info(f"Loaded embedding model: {embedding_model}")
         
         # Initialize ChromaDB client
@@ -64,11 +71,17 @@ class CatalogStore:
             
             logger.info(f"Loading {len(products)} products from catalog")
             
-            # Clear existing data - fix the ChromaDB error
             try:
-                self.collection.delete(where={"id": {"$ne": ""}})  # Delete all documents
-            except:
-                pass  # If collection is empty, this will fail but that's okay
+                # Safer reset: delete collection then recreate to avoid filter issues
+                name = self.collection.name
+                self.client.delete_collection(name)
+                self.collection = self.client.get_or_create_collection(
+                    name=name,
+                    metadata={"hnsw:space": "cosine"}
+                )
+            except Exception:
+                # Fallback: ignore if cannot delete
+                pass
             
             # Prepare data for ChromaDB
             documents = []
@@ -83,8 +96,11 @@ class CatalogStore:
                 metadata = self._create_metadata(product)
                 metadatas.append(metadata)
                 
-                # Use product ID
-                ids.append(product['id'])
+                # Use product ID as string (Chroma expects string IDs)
+                try:
+                    ids.append(str(product['id']))
+                except Exception:
+                    ids.append(str(product.get('id', '')))  # ensure string
             
             # Add to ChromaDB
             self.collection.add(

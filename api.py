@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 
 from src.config import get_config, setup_logging, reload_config
-from src.agent import ModularAgenticAgent
+# Import agent lazily inside startup to allow server to run without ML deps
 
 # Setup dynamic logging
 setup_logging()
@@ -69,14 +69,19 @@ async def startup_event():
     global agent
     try:
         logger.info("Initializing Dynamic Modular Commerce Agent...")
-        
+
+        # Lazy import here to avoid hard dependency during server boot
+        from src.agent import ModularAgenticAgent  # noqa: WPS433
+
         # Initialize the modular agentic agent with dynamic configuration
         agent = ModularAgenticAgent()
         logger.info(f"Dynamic Modular Agentic Commerce Agent initialized successfully with {config.llm_model}")
         
     except Exception as e:
+        # Do not block server start; run in degraded mode without agent
+        agent = None
         logger.error(f"Failed to initialize Commerce Agent: {e}")
-        raise e
+        logger.warning("Starting API in degraded mode without ML dependencies. Text/image search will use a simple fallback.")
 
 @app.get("/")
 async def root():
@@ -95,6 +100,7 @@ async def admin_reload():
     try:
         # Reload configuration and reinitialize agent
         reload_config()
+        from src.agent import ModularAgenticAgent  # noqa: WPS433
         agent = ModularAgenticAgent()
         return ReloadResponse(status="ok", message="Dynamic modular agentic agent and tools reloaded with updated configuration.")
     except Exception as e:
@@ -112,7 +118,18 @@ async def ask_agent(request: AskRequest):
     - Image-based product search
     """
     if agent is None:
-        raise HTTPException(status_code=500, detail="Agent not initialized")
+        # Degraded mode fallback response
+        text = (request.text_input or "").strip()
+        if not text and not request.image_base64:
+            raise HTTPException(status_code=400, detail="No input provided")
+        fallback = {
+            "response": "Service running in setup mode. Please complete dependency installation for full features.",
+            "products": [],
+            "intent": "general_chat",
+            "confidence": 0.2,
+            "metadata": {"degraded_mode": True}
+        }
+        return AskResponse(**fallback)
     
     try:
         # Process the request using the agentic system with conversation context

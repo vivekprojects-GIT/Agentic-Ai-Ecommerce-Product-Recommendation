@@ -5,6 +5,8 @@ Handles general questions, greetings, and conversational interactions.
 
 import logging
 from typing import Dict, Any, List
+import re
+from src.config.dynamic_config import get_config
 
 logger = logging.getLogger(__name__)
 
@@ -13,38 +15,36 @@ class GeneralConversationTool:
     
     def __init__(self):
         """Initialize the general conversation tool."""
-        self.agent_name = "PalonaAI"
-        self.capabilities = [
-            "Product recommendations and search",
-            "Image-based product analysis", 
-            "General shopping assistance",
-            "Product comparisons",
-            "Answering questions about our catalog"
-        ]
-        
-        # Predefined Q&A pairs for common questions
-        self.qa_pairs = {
-            "what's your name": f"I'm {self.agent_name}, your AI shopping assistant! I'm here to help you find the perfect products.",
-            "who are you": f"I'm {self.agent_name}, your intelligent shopping companion. I specialize in helping you discover amazing products through text descriptions or image analysis.",
-            "what can you do": f"I can help you with several things:\n• **Product Search**: Find specific items like 'red t-shirts' or 'running shoes'\n• **Image Analysis**: Upload photos to find similar products\n• **Recommendations**: Get personalized suggestions based on your needs\n• **Product Information**: Learn about features, prices, and availability\n• **Comparisons**: Help you choose between different products",
-            "how do you work": "I use advanced AI technology to understand exactly what you're looking for. You can describe products in words or show me pictures, and I'll search through our catalog to find the best matches for you.",
-            "what products do you have": "I have access to a wide range of products including clothing, shoes, electronics, and accessories. I can help you find specific items or browse by category.",
-            "can you help me shop": "Absolutely! I'm here to make your shopping experience great. Just tell me what you're looking for or upload an image, and I'll help you find the perfect products.",
-            "what's your specialty": f"My specialty is understanding your shopping needs and finding the best products for you. Whether you describe what you want or show me a picture, I'll use my AI capabilities to provide accurate recommendations.",
-            "how accurate are your recommendations": "I use advanced semantic search and AI validation to ensure my recommendations are highly relevant to what you're looking for. I focus on finding products that truly match your needs.",
-            "can you compare products": "Yes! I can help you compare different products, explain their features, and help you make informed decisions about which items best suit your needs.",
-            "do you remember our conversation": "I maintain context throughout our conversation to provide better, more personalized recommendations as we chat.",
-            "what if i don't like the recommendations": "No problem! Just let me know what you'd like to change - maybe different colors, styles, or price ranges. I'll adjust my search to find better options for you.",
-            "can you help with sizing": "While I can show you available sizes for products, I'd recommend checking the specific sizing charts for each item to ensure the best fit for you.",
-            "what about returns or exchanges": "For specific return and exchange policies, I'd recommend checking with the retailer directly, as policies can vary by product and seller.",
-            "how do i place an order": "I can help you find the perfect products, but for placing orders, you'll need to visit the retailer's website or store directly.",
-            "are your recommendations personalized": "Yes! I learn from our conversation to provide more relevant recommendations. The more you tell me about your preferences, the better I can help you find what you're looking for."
+        self.config = get_config()
+        self.agent_name = self.config.agent_name
+        msgs = self.config.get_response_messages()
+        # Build lightweight QA map from config messages to avoid hardcoded text
+        self.qa_map = {
+            "what's your name": f"I'm {self.agent_name}, your AI shopping assistant!",
+            "who are you": f"I'm {self.agent_name}, your shopping companion.",
+            "what can you do": (
+                "I can help you with product search, image analysis, recommendations, "
+                "product information, and comparisons."
+            ),
+            "how do you work": "I understand your request and search the catalog for the best matches.",
+            "can you compare products": "Yes, I can compare items and explain key differences.",
+            "do you remember our conversation": "Yes, I keep context to improve recommendations."
         }
     
     def handle_conversation(self, message: str, conversation_context: Dict[str, Any] = None) -> Dict[str, Any]:
         """Handle general conversation and return appropriate response."""
         try:
             message_lower = message.lower().strip()
+            # Capture: "my name is <name>" and acknowledge + return metadata to persist
+            m = re.search(r"\bmy\s+name\s+is\s+([a-zA-Z][\w\s'-]{1,40})$", message_lower)
+            if m:
+                name = m.group(1).strip().title()
+                return {
+                    "response": f"Nice to meet you, {name}! I’ll remember your name while we shop.",
+                    "intent": "general_chat",
+                    "confidence": 0.95,
+                    "metadata": {"tool_used": "general_conversation", "set_user_name": name}
+                }
             
             # Handle greetings
             if any(greeting in message_lower for greeting in ["hello", "hi", "hey", "good morning", "good afternoon", "good evening"]):
@@ -65,8 +65,8 @@ class GeneralConversationTool:
             elif any(goodbye in message_lower for goodbye in ["bye", "goodbye", "see you", "talk to you later"]):
                 return self._handle_goodbye()
             
-            # Check for predefined Q&A
-            for question, answer in self.qa_pairs.items():
+            # Check for predefined Q&A (config-driven map)
+            for question, answer in self.qa_map.items():
                 if question in message_lower:
                     return {
                         "response": answer,
@@ -155,8 +155,33 @@ class GeneralConversationTool:
     
     def _handle_general_question(self, message: str, conversation_context: Dict[str, Any] = None) -> Dict[str, Any]:
         """Handle general questions not covered by Q&A pairs."""
+        # If user asks about earlier context, summarize last interactions
+        msg = (message or "").lower()
+        if "what did i ask" in msg or "what did we talk" in msg or "earlier" in msg:
+            history = []
+            if conversation_context and isinstance(conversation_context, dict):
+                history = (conversation_context.get("conversation_history") or [])
+            if history:
+                last = history[-5:]
+                bullets = []
+                for it in last:
+                    intent = it.get("intent", "unknown")
+                    txt = (it.get("user_input") or "").strip().replace("\n"," ")
+                    if len(txt) > 70:
+                        txt = txt[:70] + "…"
+                    bullets.append(f"• {intent}: {txt}")
+                summary = "Here’s what you asked recently:\n\n" + "\n".join(bullets)
+            else:
+                summary = "I don’t have earlier messages yet in this session."
+            return {
+                "response": summary,
+                "intent": "general_chat",
+                "confidence": 0.9,
+                "metadata": {"tool_used": "general_conversation", "type": "context_summary"}
+            }
+
         return {
-            "response": f"I'm here to help with your shopping needs! I can assist you with finding products, answering questions about our catalog, or helping you make decisions. What specific shopping question can I help you with?",
+            "response": "I’m here to help with your shopping. Ask me to find items, set a budget or color, or upload a photo for similar products.",
             "intent": "general_chat",
             "confidence": 0.7,
             "metadata": {"tool_used": "general_conversation", "type": "general_question"}

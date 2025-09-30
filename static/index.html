@@ -79,6 +79,8 @@
             background: #202c33;
             border-radius: 0 8px 8px 8px;
         }
+        .bubble a { color: #00a884; text-decoration: none; }
+        .bubble a:hover { text-decoration: underline; }
         
         .product {
             background: #111b21;
@@ -206,7 +208,14 @@
         <div class="input-area">
             <div class="input-row">
                 <input type="text" id="messageInput" placeholder="Type a message..." />
+                <input type="file" id="imageInput" accept="image/*" style="display:none" />
+                <button id="attachBtn" onclick="document.getElementById('imageInput').click()" title="Attach image">Attach</button>
                 <button id="sendBtn" onclick="sendMessage()">Send</button>
+            </div>
+            <div id="imagePreview" style="margin-top:8px; display:none">
+                <span style="font-size:12px; color:#8696a0">Attached image:</span>
+                <img id="previewImg" src="" alt="preview" style="display:block; max-height:120px; margin-top:6px; border-radius:6px;" />
+                <button id="clearImageBtn" style="margin-top:6px; background:#2a3942">Remove</button>
             </div>
         </div>
     </div>
@@ -215,14 +224,33 @@
         const messagesDiv = document.getElementById('messages');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const clearImageBtn = document.getElementById('clearImageBtn');
+        let imageBase64 = null;
         
-        function addMessage(role, content, products = []) {
+        function addMessage(role, content, products = [], imageData = null) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${role}`;
             
             const bubble = document.createElement('div');
             bubble.className = `bubble ${role}`;
-            bubble.textContent = content;
+            // Render minimal markdown (bold, links, line breaks, lists)
+            bubble.innerHTML = renderMarkdownBasic(content);
+            
+            // Optional image (for user-sent attachments)
+            if (imageData) {
+                const img = document.createElement('img');
+                img.src = imageData.startsWith('data:') ? imageData : `data:image/jpeg;base64,${imageData}`;
+                img.alt = 'uploaded';
+                img.style.maxWidth = '220px';
+                img.style.maxHeight = '220px';
+                img.style.display = 'block';
+                img.style.borderRadius = '6px';
+                img.style.marginTop = '8px';
+                bubble.appendChild(img);
+            }
             
             if (products.length > 0) {
                 products.forEach(product => {
@@ -243,6 +271,22 @@
             messageDiv.appendChild(bubble);
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function escapeHtml(s){
+            return s.replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+        }
+        
+        function renderMarkdownBasic(md){
+            if(!md) return '';
+            let s = escapeHtml(String(md));
+            // links [text](url)
+            s = s.replace(/\[([^\]]+)\]\((https?:[^\)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            // bold **text**
+            s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            // numbered list like 1. text -> line breaks preserved
+            s = s.replace(/\n/g, '<br/>');
+            return s;
         }
         
         function addTypingIndicator() {
@@ -268,11 +312,62 @@
             if (typing) typing.remove();
         }
         
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        imageInput.addEventListener('change', async (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            try {
+                // Resize client-side by loading into canvas to keep payload small
+                const dataUrl = await new Promise((resolve, reject) => {
+                    const fr = new FileReader();
+                    fr.onload = () => resolve(fr.result);
+                    fr.onerror = reject;
+                    fr.readAsDataURL(file);
+                });
+                const img = new Image();
+                img.onload = () => {
+                    const maxSize = 1024;
+                    let { width, height } = img;
+                    const scale = Math.min(1, maxSize / Math.max(width, height));
+                    width = Math.round(width * scale);
+                    height = Math.round(height * scale);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressed = canvas.toDataURL('image/jpeg', 0.85);
+                    imageBase64 = compressed.split(',')[1];
+                    previewImg.src = compressed;
+                    imagePreview.style.display = 'block';
+                };
+                img.src = dataUrl;
+            } catch (err) {
+                addMessage('assistant', '⚠️ Failed to load image: ' + err.message);
+            }
+        });
+
+        clearImageBtn.addEventListener('click', () => {
+            imageInput.value = '';
+            imageBase64 = null;
+            previewImg.src = '';
+            imagePreview.style.display = 'none';
+        });
+
         async function sendMessage() {
             const message = messageInput.value.trim();
-            if (!message) return;
+            if (!message && !imageBase64) return;
             
-            addMessage('user', message);
+            // Show the user's outgoing message with optional image
+            addMessage('user', message || ' ', [], imageBase64 ? `data:image/jpeg;base64,${imageBase64}` : null);
             messageInput.value = '';
             sendBtn.disabled = true;
             
@@ -282,38 +377,11 @@
                 const response = await fetch('/api/v1/simple-rag/ask', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text_input: message })
+                    body: JSON.stringify({ text_input: message, image_base64: imageBase64 })
                 });
-                
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                let responseText = '';
-                let products = [];
-                
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    
-                    const chunk = decoder.decode(value);
-                    const lines = chunk.split('\n');
-                    
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            try {
-                                const data = JSON.parse(line.substring(6));
-                                if (data.type === 'response') {
-                                    responseText = data.response;
-                                    products = data.products || [];
-                                } else if (data.type === 'error') {
-                                    responseText = '⚠️ ' + data.message;
-                                }
-                            } catch (e) {}
-                        }
-                    }
-                }
-                
+                const result = await response.json();
                 removeTypingIndicator();
-                addMessage('assistant', responseText || 'Sorry, I couldn\'t process that.', products);
+                addMessage('assistant', result.response || 'Sorry, I couldn\'t process that.', result.products || []);
                 
             } catch (error) {
                 removeTypingIndicator();
@@ -322,6 +390,13 @@
             
             sendBtn.disabled = false;
             messageInput.focus();
+            // reset image after send
+            if (imageBase64) {
+                imageInput.value = '';
+                imageBase64 = null;
+                imagePreview.style.display = 'none';
+                previewImg.src = '';
+            }
         }
         
         messageInput.addEventListener('keypress', (e) => {

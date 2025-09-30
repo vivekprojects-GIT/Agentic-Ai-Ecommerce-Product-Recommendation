@@ -25,9 +25,10 @@ class DynamicConfig:
     # Model Configuration
     google_api_key: str = os.getenv("GOOGLE_API_KEY", "")
     embedding_model: str = os.getenv("EMBEDDING_MODEL", "BAAI/bge-base-en")
-    llm_model: str = os.getenv("LLM_MODEL", "gemini-2.0-flash-exp")
+    llm_model: str = os.getenv("LLM_MODEL", "gemini-2.5-flash")
     llm_temperature: float = float(os.getenv("LLM_TEMPERATURE", "0.7"))
     llm_max_tokens: int = int(os.getenv("LLM_MAX_TOKENS", "2048"))
+    llm_api_version: str = os.getenv("LLM_API_VERSION", "v1")
     
     # Database Configuration
     chroma_persist_dir: str = os.getenv("CHROMA_PERSIST_DIR", "./chroma_db")
@@ -77,6 +78,10 @@ class DynamicConfig:
     formal_keywords: str = os.getenv("FORMAL_KEYWORDS", "formal,business,office,professional,dress")
     outdoor_keywords: str = os.getenv("OUTDOOR_KEYWORDS", "outdoor,hiking,camping,adventure,nature")
     price_keywords: str = os.getenv("PRICE_KEYWORDS", "under,budget,cheap,affordable,dollar,price,cost")
+    color_keywords: str = os.getenv(
+        "COLOR_KEYWORDS",
+        "red,yellow,black,white,blue,green,orange,purple,pink,beige,brown,grey,gray"
+    )
     search_keywords: str = os.getenv("SEARCH_KEYWORDS", "find,search,look for,need,want,recommend,show me,suggest")
     apparel_keywords: str = os.getenv("APPAREL_KEYWORDS", "shirt,t-shirt,shorts,pants,jacket,sweater,hoodie,cap,hat")
     sports_keywords: str = os.getenv("SPORTS_KEYWORDS", "shoes,sneakers,cleats,baseball,football,basketball,soccer")
@@ -120,7 +125,8 @@ class DynamicConfig:
             "model": self.llm_model,
             "google_api_key": self.google_api_key,
             "temperature": self.llm_temperature,
-            "max_output_tokens": self.llm_max_tokens
+            "max_output_tokens": self.llm_max_tokens,
+            "api_version": self.llm_api_version
         }
     
     def get_search_config(self) -> Dict[str, Any]:
@@ -157,6 +163,7 @@ class DynamicConfig:
             "formal": [k.strip() for k in self.formal_keywords.split(",")],
             "outdoor": [k.strip() for k in self.outdoor_keywords.split(",")],
             "price": [k.strip() for k in self.price_keywords.split(",")],
+            "colors": [k.strip() for k in self.color_keywords.split(",")],
             "search": [k.strip() for k in self.search_keywords.split(",")],
             "apparel": [k.strip() for k in self.apparel_keywords.split(",")],
             "sports": [k.strip() for k in self.sports_keywords.split(",")],
@@ -191,6 +198,24 @@ class DynamicConfig:
             "professional_material": self.professional_material,
             "outdoor_material": self.outdoor_material
         }
+
+    # ===== Routing prompt (configurable) =====
+    router_prompt: str = os.getenv(
+        "ROUTER_PROMPT",
+        (
+            "You are a controller that routes commerce queries to tools.\n"
+            "Available tools: general_conversation, text_product_search, image_product_search.\n"
+            "Decide the single best route based on the user input and whether an image was provided.\n"
+            "Rules:\n"
+            "- If an image is present or the user mentions a photo/picture, route to image_product_search.\n"
+            "- If the user asks for or describes products in text, route to text_product_search.\n"
+            "- Otherwise, route to general_conversation.\n"
+            "Output strict JSON with keys: {\"route\": <tool_name>, \"rationale\": <short reason>}"
+        )
+    )
+
+    def get_router_prompt(self) -> str:
+        return self.router_prompt
     
     def get_error_messages(self) -> Dict[str, str]:
         """Get all error messages as dictionary."""

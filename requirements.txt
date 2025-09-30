@@ -1,28 +1,33 @@
 # AI Agent for Commerce Website - Dependencies
 
 # Core Framework
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-pydantic==2.5.0
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+setuptools>=74.0.0
+wheel>=0.44.0
 
 # AI & ML
-google-generativeai==0.3.2
-sentence-transformers==2.2.2
-chromadb==0.4.18
+# Use google-genai (new package) instead of deprecated google-generativeai
+google-genai==0.6.0
+langchain==0.2.16
+langchain-google-genai==1.0.7
+sentence-transformers==3.0.1
+chromadb==0.5.3
 rank-bm25==0.2.2
 
 # Image Processing
-Pillow==10.1.0
-opencv-python==4.8.1.78
+Pillow==10.4.0
+opencv-python==4.10.0.84
 
 # Web UI
-gradio==4.8.0
+gradio==4.44.0
 
 # Utilities
-python-dotenv==1.0.0
-requests==2.31.0
-numpy==1.24.3
-pandas==2.1.4
+python-dotenv==1.0.1
+requests==2.32.3
+numpy==1.26.4
+pandas==2.2.3
 
 # Development (optional)
 pytest==7.4.3
