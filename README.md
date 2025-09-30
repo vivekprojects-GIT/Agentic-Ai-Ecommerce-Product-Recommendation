@@ -216,6 +216,85 @@ Deployment tips:
 
 ---
 
+### Store JSON data in DB (ChromaDB)
+
+- ChromaDB metadata fields must be JSON-serializable primitives. For nested fields (lists/dicts), serialize to string when writing and deserialize when reading.
+- This repo follows that pattern for `attributes.size`:
+  - Write: `json.dumps(product['attributes'].get('size', []))` into metadata
+  - Read: `json.loads(metadata.get('size', '[]'))` back into Python list
+
+Minimal example (write/read):
+
+```python
+# write to Chroma: flatten nested fields into metadata-friendly values
+metadata = {
+    'id': product['id'],
+    'name': product['name'],
+    'price': product['price'],
+    'brand': product['attributes'].get('brand', ''),
+    'size': json.dumps(product['attributes'].get('size', [])),  # list -> string
+}
+
+# read from Chroma: reconstruct your nested structure
+size_list = json.loads(metadata.get('size', '[]'))  # string -> list
+product = {
+    'id': metadata.get('id', ''),
+    'name': metadata.get('name', ''),
+    'price': metadata.get('price', 0),
+    'attributes': {
+        'brand': metadata.get('brand', ''),
+        'size': size_list,
+    }
+}
+```
+
+Reference in code:
+
+```118:139:src/vector_store/catalog.py
+def _create_metadata(self, product: Dict[str, Any]) -> Dict[str, Any]:
+    base_url = os.getenv("PRODUCT_BASE_URL", "https://example.com/products/")
+    product_url = product.get("url") or f"{base_url}{product['id']}"
+    metadata = {
+        'id': product['id'],
+        'name': product['name'],
+        'description': product['description'],
+        'price': product['price'],
+        'availability': product['availability'],
+        'brand': product['attributes'].get('brand', ''),
+        'color_family': product['attributes'].get('color_family', ''),
+        'material': product['attributes'].get('material', ''),
+        'category': product['category'][0] if product['category'] else '',
+        'size': json.dumps(product['attributes'].get('size', [])),
+        'url': product_url
+    }
+    return metadata
+```
+
+```141:158:src/vector_store/catalog.py
+def _metadata_to_product(self, metadata: Dict[str, Any], document: str) -> Dict[str, Any]:
+    product = {
+        'id': metadata.get('id', ''),
+        'name': metadata.get('name', ''),
+        'description': metadata.get('description', ''),
+        'price': metadata.get('price', 0),
+        'availability': metadata.get('availability', True),
+        'category': [metadata.get('category', '')] if metadata.get('category') else [],
+        'attributes': {
+            'brand': metadata.get('brand', ''),
+            'color_family': metadata.get('color_family', ''),
+            'material': metadata.get('material', ''),
+            'size': json.loads(metadata.get('size', '[]'))
+        },
+        'search_text': document,
+        'url': metadata.get('url', '')
+    }
+    return product
+```
+
+Notes:
+- Keep values small; ChromaDB metadata is intended for filtering and retrieval context.
+- Use `where` filters on metadata fields for efficient constrained search (price, brand, color, category, availability).
+
 ### Tools Overview
 
 - `general_conversation.py`
