@@ -69,8 +69,8 @@ Tip: For image queries, send base64 in `image_base64`. See Quick commands.
 ### Simple Architecture
 
 ```mermaid
-flowchart TD
-  User[User (Text/Image)] --> UI[Web UI]
+flowchart TD;
+  User[User (Text\/Image)] --> UI[Web UI]
   UI --> API[FastAPI /ask]
   API --> Agent[Router]
   Agent -->|general_chat| Gen[General Conversation]
