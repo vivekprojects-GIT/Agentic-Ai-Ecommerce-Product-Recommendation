@@ -1,0 +1,30 @@
+# AI Agent for Commerce Website - Dependencies
+
+# Core Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+
+# AI & ML
+google-generativeai==0.3.2
+sentence-transformers==2.2.2
+chromadb==0.4.18
+rank-bm25==0.2.2
+
+# Image Processing
+Pillow==10.1.0
+opencv-python==4.8.1.78
+
+# Web UI
+gradio==4.8.0
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.31.0
+numpy==1.24.3
+pandas==2.1.4
+
+# Development (optional)
+pytest==7.4.3
+black==23.11.0
+flake8==6.1.0

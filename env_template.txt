@@ -1,0 +1,105 @@
+# AI Agent for Commerce Website - Dynamic Configuration
+# Copy this to .env and configure your values
+
+# API Configuration
+GOOGLE_API_KEY=your_google_api_key_here
+API_PORT=8080
+API_HOST=0.0.0.0
+GRADIO_PORT=7860
+GRADIO_HOST=0.0.0.0
+
+# Model Configuration
+EMBEDDING_MODEL=BAAI/bge-base-en
+LLM_MODEL=gemini-2.0-flash-exp
+LLM_TEMPERATURE=0.7
+LLM_MAX_TOKENS=2048
+
+# Database Configuration
+CHROMA_PERSIST_DIR=./chroma_db
+CHROMA_FORCE_RELOAD=0
+CHROMA_COLLECTION_NAME=commerce_products
+
+# Search Configuration
+SEARCH_TOP_K=3
+SEARCH_SIMILARITY_THRESHOLD=0.7
+CANDIDATE_MULTIPLIER=5
+ENABLE_HYBRID_SEARCH=1
+MAX_CATALOG_PRODUCTS=10000
+BM25_WEIGHT=0.3
+ANN_WEIGHT=0.7
+
+# Agent Configuration
+MAX_RETRIES=3
+CONFIDENCE_THRESHOLD=0.7
+CONVERSATION_CONTEXT_LIMIT=3
+REASONING_ENABLED=1
+TOOL_CALLING_ENABLED=1
+
+# UI Configuration
+UI_TITLE=Shopping Assistant
+UI_DESCRIPTION=Your AI-powered shopping companion
+UI_THEME=soft
+UI_MAX_WIDTH=3200
+UI_CHAT_HEIGHT=1800
+CHECKPOINT_FREQUENCY=5
+RECENT_INTERACTIONS_LIMIT=3
+CONVERSATION_HISTORY_LIMIT=5
+API_TIMEOUT=30
+
+# Logging Configuration
+LOG_LEVEL=INFO
+LOG_FORMAT=%(asctime)s - %(name)s - %(levelname)s - %(message)s
+
+# Performance Configuration
+ENABLE_CACHING=1
+CACHE_TTL=3600
+MAX_CONCURRENT_REQUESTS=10
+
+# Feature Flags
+ENABLE_IMAGE_ANALYSIS=1
+ENABLE_PRODUCT_COMPARISON=1
+ENABLE_HYBRID_SEARCH=1
+ENABLE_STREAMING=1
+
+# Dynamic Keyword Lists (comma-separated, customizable)
+GYM_KEYWORDS=gym,workout,fitness,exercise,training,athletic,sports,running,jogging
+CASUAL_KEYWORDS=casual,everyday,daily,relaxed,comfort
+FORMAL_KEYWORDS=formal,business,office,professional,dress
+OUTDOOR_KEYWORDS=outdoor,hiking,camping,adventure,nature
+PRICE_KEYWORDS=under,budget,cheap,affordable,dollar,price,cost
+SEARCH_KEYWORDS=find,search,look for,need,want,recommend,show me,suggest
+APPAREL_KEYWORDS=shirt,t-shirt,shorts,pants,jacket,sweater,hoodie,cap,hat
+SPORTS_KEYWORDS=shoes,sneakers,cleats,baseball,football,basketball,soccer
+COMPARISON_KEYWORDS=compare,vs,versus,difference
+DETAILS_KEYWORDS=details,info,about,specs
+IMAGE_KEYWORDS=image,photo
+
+# Dynamic Intent Types
+PRODUCT_SEARCH_INTENT=product_search
+PRODUCT_COMPARISON_INTENT=product_comparison
+PRODUCT_DETAILS_INTENT=product_details
+IMAGE_SEARCH_INTENT=image_search
+GENERAL_CHAT_INTENT=general_chat
+
+# Dynamic Response Messages
+AGENT_NAME=AI shopping assistant
+AGENT_CAPABILITIES=find products, analyze images, and answer questions about our catalog
+AGENT_GREETING=Hello! I'm your AI shopping assistant. I'm here to help you find amazing products, answer your questions, and make your shopping experience great.
+
+# Dynamic Material Descriptions
+ACTIVE_WEAR_MATERIAL=Perfect for active wear
+PROFESSIONAL_MATERIAL=Professional quality
+OUTDOOR_MATERIAL=Durable for outdoor use
+
+# Dynamic Context Responses
+GYM_INTRO=💪 Perfect for your gym workouts!
+RUNNING_INTRO=🏃‍♂️ Great running gear!
+CASUAL_INTRO=👕 Perfect for everyday wear!
+FORMAL_INTRO=👔 Professional attire!
+OUTDOOR_INTRO=🏔️ Adventure-ready gear!
+PRICE_INTRO=💰 Budget-friendly options!
+
+# Dynamic Error Messages
+API_QUOTA_ERROR=I apologize, but I've reached my daily API quota limit. Please try again later or contact support.
+IMAGE_ANALYSIS_ERROR=I'm unable to analyze images at the moment. Please describe what you're looking for in text.
+SEARCH_ERROR=I encountered an error while searching for products. Please try again with different terms.

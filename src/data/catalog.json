@@ -1,0 +1,752 @@
+[
+  {
+    "id": "nike-red-tshirt-001",
+    "name": "Nike Dri-FIT Red Performance T-Shirt",
+    "description": "Lightweight, breathable red t-shirt perfect for workouts and casual wear. Made with Nike's signature Dri-FIT technology.",
+    "price": 29.99,
+    "availability": true,
+    "category": ["Tops", "T-Shirts", "Athletic"],
+    "attributes": {
+      "color_family": "red",
+      "size": ["S", "M", "L", "XL"],
+      "material": "polyester blend",
+      "brand": "Nike"
+    },
+    "search_text": "Nike red t-shirt athletic performance Dri-FIT breathable lightweight workout casual wear polyester"
+  },
+  {
+    "id": "adidas-blue-shoes-002",
+    "name": "Adidas Ultraboost 22 Blue Running Shoes",
+    "description": "Premium blue running shoes with responsive cushioning and energy return. Perfect for long runs and daily training.",
+    "price": 189.99,
+    "availability": true,
+    "category": ["Footwear", "Running", "Athletic"],
+    "attributes": {
+      "color_family": "blue",
+      "size": ["7", "8", "9", "10", "11", "12"],
+      "material": "mesh upper, boost midsole",
+      "brand": "Adidas"
+    },
+    "search_text": "Adidas blue running shoes Ultraboost cushioning energy return training mesh boost"
+  },
+  {
+    "id": "puma-black-hoodie-003",
+    "name": "Puma Classic Black Hoodie",
+    "description": "Comfortable black hoodie with classic Puma logo. Soft cotton blend fabric for all-day comfort.",
+    "price": 49.99,
+    "availability": true,
+    "category": ["Tops", "Hoodies", "Casual"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["S", "M", "L", "XL"],
+      "material": "cotton blend",
+      "brand": "Puma"
+    },
+    "search_text": "Puma black hoodie classic logo cotton blend comfortable casual wear"
+  },
+  {
+    "id": "apple-watch-white-004",
+    "name": "Apple Watch Series 9 White Sport Band",
+    "description": "Latest Apple Watch in white with advanced health monitoring, fitness tracking, and cellular connectivity.",
+    "price": 429.99,
+    "availability": true,
+    "category": ["Electronics", "Wearables", "Smartwatch"],
+    "attributes": {
+      "color_family": "white",
+      "size": ["41mm", "45mm"],
+      "material": "aluminum case, sport band",
+      "brand": "Apple"
+    },
+    "search_text": "Apple Watch Series 9 white sport band health monitoring fitness tracking cellular smartwatch"
+  },
+  {
+    "id": "sony-headphones-gray-005",
+    "name": "Sony WH-1000XM5 Gray Noise Cancelling Headphones",
+    "description": "Premium gray noise-cancelling headphones with exceptional sound quality and 30-hour battery life.",
+    "price": 399.99,
+    "availability": true,
+    "category": ["Electronics", "Audio", "Headphones"],
+    "attributes": {
+      "color_family": "gray",
+      "size": ["One Size"],
+      "material": "plastic, memory foam",
+      "brand": "Sony"
+    },
+    "search_text": "Sony gray headphones noise cancelling premium sound quality 30-hour battery WH-1000XM5"
+  },
+  {
+    "id": "nike-green-jacket-006",
+    "name": "Nike Windrunner Green Jacket",
+    "description": "Lightweight green windbreaker jacket perfect for outdoor activities and layering. Water-resistant and breathable.",
+    "price": 79.99,
+    "availability": true,
+    "category": ["Outerwear", "Jackets", "Athletic"],
+    "attributes": {
+      "color_family": "green",
+      "size": ["S", "M", "L", "XL"],
+      "material": "polyester",
+      "brand": "Nike"
+    },
+    "search_text": "Nike green jacket Windrunner windbreaker lightweight water-resistant breathable outdoor athletic"
+  },
+  {
+    "id": "adidas-white-sneakers-007",
+    "name": "Adidas Stan Smith White Leather Sneakers",
+    "description": "Classic white leather sneakers with iconic Stan Smith design. Perfect for casual wear and everyday style.",
+    "price": 89.99,
+    "availability": true,
+    "category": ["Footwear", "Sneakers", "Casual"],
+    "attributes": {
+      "color_family": "white",
+      "size": ["7", "8", "9", "10", "11", "12"],
+      "material": "leather upper, rubber sole",
+      "brand": "Adidas"
+    },
+    "search_text": "Adidas white Stan Smith leather sneakers classic casual everyday style iconic design"
+  },
+  {
+    "id": "puma-red-shorts-008",
+    "name": "Puma Training Red Athletic Shorts",
+    "description": "Comfortable red athletic shorts with moisture-wicking fabric. Perfect for gym workouts and training.",
+    "price": 24.99,
+    "availability": true,
+    "category": ["Bottoms", "Shorts", "Athletic"],
+    "attributes": {
+      "color_family": "red",
+      "size": ["S", "M", "L", "XL"],
+      "material": "polyester",
+      "brand": "Puma"
+    },
+    "search_text": "Puma red athletic shorts training moisture-wicking gym workout comfortable polyester"
+  },
+  {
+    "id": "nike-blue-leggings-009",
+    "name": "Nike Pro Blue Training Leggings",
+    "description": "High-performance blue leggings with compression fit and Dri-FIT technology. Ideal for yoga and training.",
+    "price": 59.99,
+    "availability": true,
+    "category": ["Bottoms", "Leggings", "Athletic"],
+    "attributes": {
+      "color_family": "blue",
+      "size": ["XS", "S", "M", "L", "XL"],
+      "material": "polyester, spandex",
+      "brand": "Nike"
+    },
+    "search_text": "Nike blue leggings Pro training compression Dri-FIT yoga athletic spandex polyester"
+  },
+  {
+    "id": "apple-airpods-white-010",
+    "name": "Apple AirPods Pro 2nd Gen White",
+    "description": "Premium white wireless earbuds with active noise cancellation and spatial audio. Seamless integration with Apple devices.",
+    "price": 249.99,
+    "availability": true,
+    "category": ["Electronics", "Audio", "Earbuds"],
+    "attributes": {
+      "color_family": "white",
+      "size": ["One Size"],
+      "material": "plastic, silicone tips",
+      "brand": "Apple"
+    },
+    "search_text": "Apple AirPods Pro white wireless earbuds noise cancellation spatial audio seamless integration"
+  },
+  {
+    "id": "adidas-black-backpack-011",
+    "name": "Adidas Classic Black Backpack",
+    "description": "Versatile black backpack with multiple compartments and laptop sleeve. Perfect for work, school, or travel.",
+    "price": 39.99,
+    "availability": true,
+    "category": ["Accessories", "Bags", "Backpacks"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["One Size"],
+      "material": "polyester",
+      "brand": "Adidas"
+    },
+    "search_text": "Adidas black backpack classic multiple compartments laptop sleeve work school travel versatile"
+  },
+  {
+    "id": "nike-gray-sweatpants-012",
+    "name": "Nike Tech Fleece Gray Sweatpants",
+    "description": "Comfortable gray sweatpants with Nike's signature Tech Fleece material. Perfect for lounging and casual wear.",
+    "price": 69.99,
+    "availability": true,
+    "category": ["Bottoms", "Sweatpants", "Casual"],
+    "attributes": {
+      "color_family": "gray",
+      "size": ["S", "M", "L", "XL"],
+      "material": "polyester fleece",
+      "brand": "Nike"
+    },
+    "search_text": "Nike gray sweatpants Tech Fleece comfortable lounging casual wear polyester fleece"
+  },
+  {
+    "id": "sony-camera-black-013",
+    "name": "Sony Alpha A7 IV Black Mirrorless Camera",
+    "description": "Professional black mirrorless camera with 33MP sensor and 4K video recording. Perfect for photography enthusiasts.",
+    "price": 2499.99,
+    "availability": true,
+    "category": ["Electronics", "Cameras", "Photography"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["One Size"],
+      "material": "magnesium alloy",
+      "brand": "Sony"
+    },
+    "search_text": "Sony black mirrorless camera Alpha A7 IV 33MP 4K video professional photography magnesium"
+  },
+  {
+    "id": "puma-white-socks-014",
+    "name": "Puma Performance White Athletic Socks",
+    "description": "Comfortable white athletic socks with moisture-wicking technology and cushioned sole. Pack of 3 pairs.",
+    "price": 12.99,
+    "availability": true,
+    "category": ["Accessories", "Socks", "Athletic"],
+    "attributes": {
+      "color_family": "white",
+      "size": ["S", "M", "L"],
+      "material": "cotton, polyester",
+      "brand": "Puma"
+    },
+    "search_text": "Puma white athletic socks performance moisture-wicking cushioned sole cotton polyester pack 3"
+  },
+  {
+    "id": "nike-orange-cap-015",
+    "name": "Nike Dri-FIT Orange Baseball Cap",
+    "description": "Stylish orange baseball cap with Nike swoosh logo. Made with breathable Dri-FIT material and adjustable strap.",
+    "price": 19.99,
+    "availability": true,
+    "category": ["Accessories", "Hats", "Casual"],
+    "attributes": {
+      "color_family": "orange",
+      "size": ["One Size"],
+      "material": "polyester",
+      "brand": "Nike"
+    },
+    "search_text": "Nike orange baseball cap Dri-FIT breathable swoosh logo adjustable strap casual"
+  },
+  {
+    "id": "adidas-purple-tank-016",
+    "name": "Adidas Training Purple Tank Top",
+    "description": "Lightweight purple tank top perfect for summer workouts. Moisture-wicking fabric keeps you cool and dry.",
+    "price": 22.99,
+    "availability": true,
+    "category": ["Tops", "Tank Tops", "Athletic"],
+    "attributes": {
+      "color_family": "purple",
+      "size": ["S", "M", "L", "XL"],
+      "material": "polyester",
+      "brand": "Adidas"
+    },
+    "search_text": "Adidas purple tank top training lightweight summer workout moisture-wicking cool dry"
+  },
+  {
+    "id": "apple-iphone-blue-017",
+    "name": "iPhone 15 Pro Blue Titanium",
+    "description": "Latest iPhone in blue titanium with advanced camera system, A17 Pro chip, and all-day battery life.",
+    "price": 999.99,
+    "availability": true,
+    "category": ["Electronics", "Phones", "Smartphones"],
+    "attributes": {
+      "color_family": "blue",
+      "size": ["128GB", "256GB", "512GB", "1TB"],
+      "material": "titanium",
+      "brand": "Apple"
+    },
+    "search_text": "iPhone 15 Pro blue titanium camera A17 Pro chip battery life smartphone Apple"
+  },
+  {
+    "id": "nike-yellow-water-bottle-018",
+    "name": "Nike BPA-Free Yellow Water Bottle",
+    "description": "Eco-friendly yellow water bottle with leak-proof design and easy-grip texture. 32oz capacity.",
+    "price": 14.99,
+    "availability": true,
+    "category": ["Accessories", "Water Bottles", "Sports"],
+    "attributes": {
+      "color_family": "yellow",
+      "size": ["32oz"],
+      "material": "BPA-free plastic",
+      "brand": "Nike"
+    },
+    "search_text": "Nike yellow water bottle BPA-free leak-proof easy-grip 32oz eco-friendly sports"
+  },
+  {
+    "id": "sony-speaker-black-019",
+    "name": "Sony SRS-XB43 Black Bluetooth Speaker",
+    "description": "Powerful black Bluetooth speaker with deep bass and 24-hour battery life. Water-resistant and party-ready.",
+    "price": 199.99,
+    "availability": true,
+    "category": ["Electronics", "Audio", "Speakers"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["One Size"],
+      "material": "plastic, metal grille",
+      "brand": "Sony"
+    },
+    "search_text": "Sony black Bluetooth speaker SRS-XB43 deep bass 24-hour battery water-resistant party"
+  },
+  {
+    "id": "puma-green-sneakers-020",
+    "name": "Puma RS-X Green Retro Sneakers",
+    "description": "Bold green retro sneakers with chunky design and comfortable cushioning. Perfect for street style.",
+    "price": 109.99,
+    "availability": true,
+    "category": ["Footwear", "Sneakers", "Casual"],
+    "attributes": {
+      "color_family": "green",
+      "size": ["7", "8", "9", "10", "11", "12"],
+      "material": "synthetic upper, rubber sole",
+      "brand": "Puma"
+    },
+    "search_text": "Puma green RS-X retro sneakers chunky design comfortable cushioning street style synthetic"
+  },
+  {
+    "id": "northface-navy-jacket-021",
+    "name": "The North Face Navy Puffer Jacket",
+    "description": "Warm navy puffer jacket with lightweight insulation and water-resistant shell. Ideal for winter weather.",
+    "price": 179.99,
+    "availability": true,
+    "category": ["Outerwear", "Jackets", "Winter"],
+    "attributes": {
+      "color_family": "navy",
+      "size": ["S", "M", "L", "XL"],
+      "material": "nylon shell, synthetic fill",
+      "brand": "The North Face"
+    },
+    "search_text": "North Face navy puffer jacket insulated water-resistant winter warm lightweight nylon"
+  },
+  {
+    "id": "levi-blue-jeans-022",
+    "name": "Levi's 511 Blue Slim Fit Jeans",
+    "description": "Classic blue slim-fit jeans with stretch denim for comfort and durability. Timeless everyday style.",
+    "price": 69.50,
+    "availability": true,
+    "category": ["Bottoms", "Jeans", "Casual"],
+    "attributes": {
+      "color_family": "blue",
+      "size": ["28", "30", "32", "34", "36"],
+      "material": "denim",
+      "brand": "Levi's"
+    },
+    "search_text": "Levi's 511 blue jeans slim fit stretch denim casual durable everyday"
+  },
+  {
+    "id": "hm-white-shirt-023",
+    "name": "H&M Classic White Oxford Shirt",
+    "description": "Crisp white oxford button-down shirt in breathable cotton. Versatile for work or casual wear.",
+    "price": 24.99,
+    "availability": true,
+    "category": ["Tops", "Shirts", "Casual"],
+    "attributes": {
+      "color_family": "white",
+      "size": ["S", "M", "L", "XL"],
+      "material": "cotton",
+      "brand": "H&M"
+    },
+    "search_text": "H&M white oxford shirt cotton button-down versatile work casual breathable"
+  },
+  {
+    "id": "underarmour-black-tshirt-024",
+    "name": "Under Armour Tech Black T-Shirt",
+    "description": "Moisture-wicking black performance t-shirt with quick-dry fabric. Comfortable for training and daily wear.",
+    "price": 25.00,
+    "availability": true,
+    "category": ["Tops", "T-Shirts", "Athletic"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["S", "M", "L", "XL"],
+      "material": "polyester",
+      "brand": "Under Armour"
+    },
+    "search_text": "Under Armour black t-shirt Tech moisture-wicking quick-dry training athletic polyester"
+  },
+  {
+    "id": "newbalance-gray-running-025",
+    "name": "New Balance 1080v13 Gray Running Shoes",
+    "description": "Plush gray running shoes with Fresh Foam cushioning for long-distance comfort and support.",
+    "price": 164.99,
+    "availability": true,
+    "category": ["Footwear", "Running", "Athletic"],
+    "attributes": {
+      "color_family": "gray",
+      "size": ["7", "8", "9", "10", "11", "12"],
+      "material": "mesh upper, foam midsole",
+      "brand": "New Balance"
+    },
+    "search_text": "New Balance gray running shoes 1080 Fresh Foam cushioned long distance support mesh"
+  },
+  {
+    "id": "converse-white-chuck-026",
+    "name": "Converse Chuck Taylor White High Tops",
+    "description": "Iconic white high-top sneakers with canvas upper and rubber toe cap. Timeless street style.",
+    "price": 65.00,
+    "availability": true,
+    "category": ["Footwear", "Sneakers", "Casual"],
+    "attributes": {
+      "color_family": "white",
+      "size": ["6", "7", "8", "9", "10", "11", "12"],
+      "material": "canvas upper, rubber sole",
+      "brand": "Converse"
+    },
+    "search_text": "Converse Chuck Taylor white high top sneakers canvas rubber toe classic casual"
+  },
+  {
+    "id": "patagonia-green-fleece-027",
+    "name": "Patagonia Better Sweater Green Fleece",
+    "description": "Cozy green fleece jacket made from recycled materials. Warm mid-layer for cool weather.",
+    "price": 139.00,
+    "availability": true,
+    "category": ["Outerwear", "Fleece", "Outdoor"],
+    "attributes": {
+      "color_family": "green",
+      "size": ["S", "M", "L", "XL"],
+      "material": "recycled polyester fleece",
+      "brand": "Patagonia"
+    },
+    "search_text": "Patagonia green fleece Better Sweater recycled polyester warm outdoor mid-layer"
+  },
+  {
+    "id": "reebok-black-shorts-028",
+    "name": "Reebok Black Training Shorts",
+    "description": "Lightweight black training shorts with breathable fabric and elastic waistband. Ideal for workouts.",
+    "price": 21.99,
+    "availability": true,
+    "category": ["Bottoms", "Shorts", "Athletic"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["S", "M", "L", "XL"],
+      "material": "polyester",
+      "brand": "Reebok"
+    },
+    "search_text": "Reebok black training shorts lightweight breathable elastic waistband workout polyester"
+  },
+  {
+    "id": "asics-blue-running-029",
+    "name": "ASICS Gel-Kayano Blue Stability Running Shoes",
+    "description": "Supportive blue running shoes with GEL cushioning and stability features. Great for daily training.",
+    "price": 159.95,
+    "availability": true,
+    "category": ["Footwear", "Running", "Athletic"],
+    "attributes": {
+      "color_family": "blue",
+      "size": ["7", "8", "9", "10", "11", "12"],
+      "material": "mesh upper, GEL cushioning",
+      "brand": "ASICS"
+    },
+    "search_text": "ASICS blue running shoes Gel-Kayano stability GEL cushioning supportive daily trainer mesh"
+  },
+  {
+    "id": "bose-black-earbuds-030",
+    "name": "Bose QuietComfort Black Earbuds",
+    "description": "Premium black noise-cancelling earbuds with rich sound and comfortable fit. IPX4 water resistance.",
+    "price": 279.00,
+    "availability": true,
+    "category": ["Electronics", "Audio", "Earbuds"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["One Size"],
+      "material": "plastic, silicone tips",
+      "brand": "Bose"
+    },
+    "search_text": "Bose black QuietComfort earbuds noise cancelling premium sound comfortable fit IPX4"
+  },
+  {
+    "id": "jbl-orange-speaker-031",
+    "name": "JBL Flip 6 Orange Bluetooth Speaker",
+    "description": "Portable orange Bluetooth speaker with punchy bass and 12 hours of playtime. IP67 waterproof.",
+    "price": 129.95,
+    "availability": true,
+    "category": ["Electronics", "Audio", "Speakers"],
+    "attributes": {
+      "color_family": "orange",
+      "size": ["One Size"],
+      "material": "plastic, fabric grille",
+      "brand": "JBL"
+    },
+    "search_text": "JBL Flip 6 orange Bluetooth speaker waterproof IP67 portable punchy bass 12h battery"
+  },
+  {
+    "id": "garmin-black-watch-032",
+    "name": "Garmin Forerunner 265 Black GPS Watch",
+    "description": "Advanced GPS running watch with AMOLED display, training readiness, and multi-band GNSS.",
+    "price": 449.99,
+    "availability": true,
+    "category": ["Electronics", "Wearables", "Smartwatch"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["42mm", "46mm"],
+      "material": "polymer case, silicone band",
+      "brand": "Garmin"
+    },
+    "search_text": "Garmin Forerunner 265 black GPS running watch AMOLED training readiness multi-band GNSS"
+  },
+  {
+    "id": "google-pixel-gray-033",
+    "name": "Google Pixel 8 Pro Gray",
+    "description": "Flagship gray smartphone with Google Tensor G3, advanced AI camera features, and all-day battery.",
+    "price": 999.00,
+    "availability": true,
+    "category": ["Electronics", "Phones", "Smartphones"],
+    "attributes": {
+      "color_family": "gray",
+      "size": ["128GB", "256GB", "512GB", "1TB"],
+      "material": "aluminum, glass",
+      "brand": "Google"
+    },
+    "search_text": "Google Pixel 8 Pro gray smartphone Tensor G3 AI camera battery life Android flagship"
+  },
+  {
+    "id": "microsoft-surface-silver-034",
+    "name": "Microsoft Surface Laptop 5 Silver",
+    "description": "Sleek silver 13.5-inch laptop with PixelSense touchscreen and long battery life for productivity.",
+    "price": 1299.99,
+    "availability": true,
+    "category": ["Electronics", "Computers", "Laptops"],
+    "attributes": {
+      "color_family": "silver",
+      "size": ["13.5-inch"],
+      "material": "aluminum",
+      "brand": "Microsoft"
+    },
+    "search_text": "Microsoft Surface Laptop 5 silver 13.5-inch touchscreen PixelSense lightweight productivity"
+  },
+  {
+    "id": "dell-monitor-black-035",
+    "name": "Dell 27-inch Black 4K Monitor",
+    "description": "Crisp 27-inch 4K UHD monitor with IPS panel and slim bezels. Ideal for work and content creation.",
+    "price": 349.99,
+    "availability": true,
+    "category": ["Electronics", "Monitors", "Displays"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["27-inch"],
+      "material": "plastic, metal stand",
+      "brand": "Dell"
+    },
+    "search_text": "Dell black 27-inch 4K monitor IPS UHD slim bezels productivity content creation display"
+  },
+  {
+    "id": "hp-laptop-black-036",
+    "name": "HP Envy x360 Black 13-inch 2-in-1 Laptop",
+    "description": "Convertible 13-inch laptop with touchscreen, long battery life, and premium design for everyday use.",
+    "price": 899.99,
+    "availability": true,
+    "category": ["Electronics", "Computers", "Laptops"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["13-inch"],
+      "material": "aluminum",
+      "brand": "HP"
+    },
+    "search_text": "HP Envy x360 black 13-inch 2-in-1 laptop touchscreen convertible battery life premium"
+  },
+  {
+    "id": "logitech-mouse-black-037",
+    "name": "Logitech MX Master 3S Black Wireless Mouse",
+    "description": "Ergonomic black wireless mouse with MagSpeed scroll and multi-device control. USB-C rechargeable.",
+    "price": 99.99,
+    "availability": true,
+    "category": ["Electronics", "Accessories", "Mice"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["One Size"],
+      "material": "plastic, rubber",
+      "brand": "Logitech"
+    },
+    "search_text": "Logitech MX Master 3S black wireless mouse ergonomic MagSpeed multi-device USB-C"
+  },
+  {
+    "id": "rayban-black-sunglasses-038",
+    "name": "Ray-Ban Wayfarer Black Sunglasses",
+    "description": "Timeless black Wayfarer sunglasses with UV protection lenses and durable acetate frame.",
+    "price": 163.00,
+    "availability": true,
+    "category": ["Accessories", "Sunglasses", "Casual"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["One Size"],
+      "material": "acetate, glass",
+      "brand": "Ray-Ban"
+    },
+    "search_text": "Ray-Ban Wayfarer black sunglasses UV protection acetate frame classic style"
+  },
+  {
+    "id": "oakley-gray-sunglasses-039",
+    "name": "Oakley Holbrook Gray Sunglasses",
+    "description": "Sporty gray sunglasses with Prizm lenses for enhanced color and contrast. Lightweight and durable.",
+    "price": 156.00,
+    "availability": true,
+    "category": ["Accessories", "Sunglasses", "Sport"],
+    "attributes": {
+      "color_family": "gray",
+      "size": ["One Size"],
+      "material": "O Matter frame, Plutonite lenses",
+      "brand": "Oakley"
+    },
+    "search_text": "Oakley Holbrook gray sunglasses Prizm lenses sport lightweight durable O Matter"
+  },
+  {
+    "id": "columbia-brown-boots-040",
+    "name": "Columbia Newton Ridge Brown Hiking Boots",
+    "description": "Rugged brown hiking boots with waterproof construction and traction outsole for trail stability.",
+    "price": 99.99,
+    "availability": true,
+    "category": ["Footwear", "Boots", "Outdoor"],
+    "attributes": {
+      "color_family": "brown",
+      "size": ["7", "8", "9", "10", "11", "12"],
+      "material": "leather upper, rubber outsole",
+      "brand": "Columbia"
+    },
+    "search_text": "Columbia brown hiking boots Newton Ridge waterproof traction outsole trail leather"
+  },
+  {
+    "id": "vans-black-sneakers-041",
+    "name": "Vans Old Skool Black Sneakers",
+    "description": "Classic black skate shoes with suede and canvas upper and signature side stripe. Everyday staple.",
+    "price": 69.95,
+    "availability": true,
+    "category": ["Footwear", "Sneakers", "Casual"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["6", "7", "8", "9", "10", "11", "12"],
+      "material": "suede, canvas, rubber",
+      "brand": "Vans"
+    },
+    "search_text": "Vans Old Skool black sneakers skate shoes suede canvas rubber casual signature stripe"
+  },
+  {
+    "id": "crocs-blue-clogs-042",
+    "name": "Crocs Classic Blue Clogs",
+    "description": "Comfortable blue clogs with lightweight Croslite foam and ventilation ports. Easy to clean.",
+    "price": 49.99,
+    "availability": true,
+    "category": ["Footwear", "Clogs", "Casual"],
+    "attributes": {
+      "color_family": "blue",
+      "size": ["6", "7", "8", "9", "10", "11", "12"],
+      "material": "Croslite foam",
+      "brand": "Crocs"
+    },
+    "search_text": "Crocs Classic blue clogs lightweight Croslite foam ventilation easy clean comfortable"
+  },
+  {
+    "id": "birkenstock-brown-sandals-043",
+    "name": "Birkenstock Arizona Brown Sandals",
+    "description": "Comfortable brown two-strap sandals with contoured cork footbed and adjustable buckles.",
+    "price": 125.00,
+    "availability": true,
+    "category": ["Footwear", "Sandals", "Casual"],
+    "attributes": {
+      "color_family": "brown",
+      "size": ["6", "7", "8", "9", "10", "11"],
+      "material": "leather upper, cork-latex footbed",
+      "brand": "Birkenstock"
+    },
+    "search_text": "Birkenstock Arizona brown sandals cork footbed adjustable buckles comfort leather"
+  },
+  {
+    "id": "fossil-brown-watch-044",
+    "name": "Fossil Brown Leather Chronograph Watch",
+    "description": "Stylish chronograph watch with brown leather strap and stainless steel case. Water resistant.",
+    "price": 149.00,
+    "availability": true,
+    "category": ["Accessories", "Watches", "Casual"],
+    "attributes": {
+      "color_family": "brown",
+      "size": ["44mm"],
+      "material": "stainless steel, leather",
+      "brand": "Fossil"
+    },
+    "search_text": "Fossil brown leather chronograph watch stainless steel water resistant stylish 44mm"
+  },
+  {
+    "id": "northface-black-backpack-045",
+    "name": "The North Face Black Recon Backpack",
+    "description": "Durable black backpack with padded laptop sleeve and organized compartments for daily carry.",
+    "price": 109.00,
+    "availability": true,
+    "category": ["Accessories", "Bags", "Backpacks"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["One Size"],
+      "material": "nylon, polyester",
+      "brand": "The North Face"
+    },
+    "search_text": "North Face black Recon backpack durable laptop sleeve organized compartments daily carry"
+  },
+  {
+    "id": "nike-pink-leggings-046",
+    "name": "Nike One Pink High-Waist Leggings",
+    "description": "Flattering pink high-waisted leggings with stretchy fabric for comfort in workouts and daily wear.",
+    "price": 59.99,
+    "availability": true,
+    "category": ["Bottoms", "Leggings", "Athletic"],
+    "attributes": {
+      "color_family": "pink",
+      "size": ["XS", "S", "M", "L", "XL"],
+      "material": "polyester, spandex",
+      "brand": "Nike"
+    },
+    "search_text": "Nike pink leggings One high waist stretchy workout comfortable polyester spandex"
+  },
+  {
+    "id": "adidas-teal-hoodie-047",
+    "name": "Adidas Essentials Teal Hoodie",
+    "description": "Soft teal hoodie with kangaroo pocket and adjustable drawstring. Everyday comfort layer.",
+    "price": 54.99,
+    "availability": true,
+    "category": ["Tops", "Hoodies", "Casual"],
+    "attributes": {
+      "color_family": "teal",
+      "size": ["S", "M", "L", "XL"],
+      "material": "cotton blend",
+      "brand": "Adidas"
+    },
+    "search_text": "Adidas teal hoodie Essentials soft cotton blend kangaroo pocket drawstring casual"
+  },
+  {
+    "id": "puma-yellow-tshirt-048",
+    "name": "Puma Graphic Yellow T-Shirt",
+    "description": "Bright yellow graphic tee with soft cotton fabric. Casual everyday comfort with bold logo.",
+    "price": 19.99,
+    "availability": true,
+    "category": ["Tops", "T-Shirts", "Casual"],
+    "attributes": {
+      "color_family": "yellow",
+      "size": ["S", "M", "L", "XL"],
+      "material": "cotton",
+      "brand": "Puma"
+    },
+    "search_text": "Puma yellow graphic t-shirt soft cotton casual bold logo everyday tee"
+  },
+  {
+    "id": "levis-black-jacket-049",
+    "name": "Levi's Trucker Black Denim Jacket",
+    "description": "Iconic black trucker denim jacket with button-front and classic fit. Versatile layering piece.",
+    "price": 89.50,
+    "availability": true,
+    "category": ["Outerwear", "Jackets", "Casual"],
+    "attributes": {
+      "color_family": "black",
+      "size": ["S", "M", "L", "XL"],
+      "material": "denim",
+      "brand": "Levi's"
+    },
+    "search_text": "Levi's trucker black denim jacket classic fit button front versatile casual"
+  },
+  {
+    "id": "hm-beige-trousers-050",
+    "name": "H&M Slim Beige Chinos",
+    "description": "Smart beige chinos in a slim fit with a hint of stretch. Great for office or weekend wear.",
+    "price": 29.99,
+    "availability": true,
+    "category": ["Bottoms", "Trousers", "Casual"],
+    "attributes": {
+      "color_family": "beige",
+      "size": ["28", "30", "32", "34", "36"],
+      "material": "cotton, elastane",
+      "brand": "H&M"
+    },
+    "search_text": "H&M beige chinos slim fit stretch cotton elastane smart casual trousers"
+  }
+]
