@@ -75,7 +75,7 @@ flowchart TD
   API --> Agent[Router]
   Agent -->|general_chat| Gen[General Conversation]
   Agent -->|product_search| Txt[Text Search]
-  Agent -->|image_search| Img[Image → LLM → Text]
+  Agent -->|image_search| Img[Image -> LLM -> Text]
   Txt --> DB[(ChromaDB)]
   Img --> Txt
   Gen --> API
